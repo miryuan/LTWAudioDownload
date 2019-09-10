@@ -29,7 +29,7 @@ namespace LTWAudioDownload
                     Console.WriteLine("找不到页面.");
                     continue;
                 }
-                string booktitle = doc.DocumentNode.SelectSingleNode(".//div[@class='binfo']/h1").InnerText;
+                string booktitle = doc.DocumentNode.SelectSingleNode(".//div[@class='binfo']/h1").InnerText + "[" + bookid + "]";
                 string localPath = CreateDirectory(booktitle);
 
                 if (!DataHelper.CheckBook(bookid))
