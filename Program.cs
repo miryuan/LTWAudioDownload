@@ -13,6 +13,9 @@ namespace LTWAudioDownload
         static Dictionary<string, string> headers = new Dictionary<string, string>();
         static void Main(string[] args)
         {
+            //调用默认浏览器打开恋听网
+            System.Diagnostics.Process.Start("explorer.exe", "https://ting55.com");
+
             headers.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3897.0 Safari/537.36 Edg/78.0.272.0");
             headers.Add("Accept-Encoding", "gzip, deflate, br");
             headers.Add("Accept", "application/json, text/javascript, */*; q=0.01");
@@ -20,6 +23,8 @@ namespace LTWAudioDownload
             bool isFindBook = false;
             do
             {
+                Console.Title = "当前下载为空";
+
                 string bookid = ReadBookID();
                 string urlbase = "https://ting55.com/book/" + bookid;
                 var webGet = new HtmlWeb();
@@ -30,6 +35,7 @@ namespace LTWAudioDownload
                     continue;
                 }
                 string booktitle = doc.DocumentNode.SelectSingleNode(".//div[@class='binfo']/h1").InnerText + "[" + bookid + "]";
+                Console.Title = "正在下载:" + booktitle;
                 string localPath = CreateDirectory(booktitle);
 
                 if (!DataHelper.CheckBook(bookid))
@@ -50,7 +56,7 @@ namespace LTWAudioDownload
                         var flag = Download(num, audioFileResult, localPath);
                         if (flag)
                         {
-                            Console.WriteLine("下载文件成功,文件已经保存在" + localPath + "中.");
+                            Console.WriteLine("下载文件成功,文件已经保存在[" + localPath + "]中.");
                             DataHelper.AddBookChapter(bookid, num);
                         }
                     }
