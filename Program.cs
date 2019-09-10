@@ -42,7 +42,7 @@ namespace LTWAudioDownload
                     DataHelper.AddBook(bookid, booktitle);
 
                 var audioPageNums = FindAudioPages(doc);
-                Console.Title += ",共" + audioPageNums + "文件.";
+                Console.Title += ",共" + audioPageNums.Count + "文件.";
                 Console.WriteLine("找到了" + audioPageNums.Count + "个文件.");
                 foreach (var num in audioPageNums)
                 {
