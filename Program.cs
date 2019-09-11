@@ -14,7 +14,7 @@ namespace LTWAudioDownload
         static void Main(string[] args)
         {
             //调用默认浏览器打开恋听网
-            System.Diagnostics.Process.Start("explorer.exe", "https://ting55.com");
+            //System.Diagnostics.Process.Start("explorer.exe", "https://ting55.com");
 
             headers.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3897.0 Safari/537.36 Edg/78.0.272.0");
             headers.Add("Accept-Encoding", "gzip, deflate, br");
@@ -26,6 +26,7 @@ namespace LTWAudioDownload
                 Console.Title = "当前下载为空";
 
                 string bookid = ReadBookID();
+                int startPage = ReadStartID();
                 string urlbase = "https://ting55.com/book/" + bookid;
                 var webGet = new HtmlWeb();
                 var doc = webGet.Load(urlbase);//book page
@@ -48,6 +49,9 @@ namespace LTWAudioDownload
                 {
                     try
                     {
+                        if (int.Parse(num) < startPage)
+                            continue;
+
                         if (DataHelper.CheckBookChapter(bookid, num))
                             continue;
 
@@ -103,7 +107,27 @@ namespace LTWAudioDownload
             return bookID;
         }
 
-
+        /// <summary>
+        /// 获取起始位置
+        /// </summary>
+        /// <returns></returns>
+        static int ReadStartID()
+        {
+            int page = -1;
+            do
+            {
+                Console.Write("请输入开始下载位置(大于=1):");
+                try
+                {
+                    page = int.Parse(Console.ReadLine().Trim());
+                }
+                catch (Exception e)
+                {
+                    page = 1;
+                }
+            } while (page < 0);
+            return page;
+        }
 
         //https://ting55.com/book/4316
         /// <summary>
@@ -168,6 +192,11 @@ namespace LTWAudioDownload
                 writeStream = new FileStream(newFilePath, FileMode.Create);// 文件不保存创建一个文件
                 startPosition = 0;
             }
+            else
+            {
+                Console.WriteLine(newFileName + " 文件已存在,跳过.");
+                return false;
+            }
 
             try
             {
@@ -177,16 +206,24 @@ namespace LTWAudioDownload
                     myRequest.AddRange((int)startPosition);// 设置Range值,与上面的writeStream.Seek用意相同,是为了定义远程文件读取位置
                 }
 
-                Stream readStream = myRequest.GetResponse().GetResponseStream();// 向服务器请求,获得服务器的回应数据流
+                WebResponse res = myRequest.GetResponse();
+                long allSize = res.ContentLength;//总长度
+                Stream readStream = res.GetResponseStream();// 向服务器请求,获得服务器的回应数据流
 
                 byte[] btArray = new byte[512];// 定义一个字节数据,用来向readStream读取内容和向writeStream写入内容
                 int contentSize = readStream.Read(btArray, 0, btArray.Length);// 向远程文件读第一次
+                ProgressBar progressBar = new ProgressBar(Console.CursorLeft, Console.CursorTop, 50, ProgressBarType.Multicolor);
 
+                var meicishuliang = 100 * 1.0 / (allSize * 1.0 / contentSize);
+                var progressValue = 0.0;
                 while (contentSize > 0)// 如果读取长度大于零则继续读
                 {
                     writeStream.Write(btArray, 0, contentSize);// 写入本地文件
                     contentSize = readStream.Read(btArray, 0, btArray.Length);// 继续向远程文件读取
+                    progressValue += meicishuliang;
+                    progressBar.Dispaly(Convert.ToInt32(progressValue));
                 }
+                Console.WriteLine();
 
                 //关闭流
                 writeStream.Close();
