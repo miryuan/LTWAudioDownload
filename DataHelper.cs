@@ -8,7 +8,7 @@ namespace LTWAudioDownload
 {
     public class DataHelper
     {
-        static SqlSugarClient db = new SqlSugarClient("Data Source=" + System.IO.Directory.GetCurrentDirectory() + @"\db.sqlite;");
+        static SqlSugarClient db = new SqlSugarClient(@"Data Source=D:\Download\db.sqlite;");
 
         /// <summary>
         /// 找到第一条符合的数据

@@ -10,6 +10,7 @@ namespace LTWAudioDownload
 {
     class Program
     {
+        static Random random = new Random();
         static Dictionary<string, string> headers = new Dictionary<string, string>();
         static void Main(string[] args)
         {
@@ -63,6 +64,13 @@ namespace LTWAudioDownload
                         {
                             Console.WriteLine("下载文件成功,文件已经保存在[" + localPath + "]中.");
                             DataHelper.AddBookChapter(bookid, num);
+
+                            int waitSec = random.Next(30, 120);
+                            Console.WriteLine("等待" + waitSec + "秒后再进行下载下一集....");
+                            Thread.Sleep(waitSec * 1000);
+                        }else
+                        {
+                            Thread.Sleep(2000);
                         }
                     }
                     catch (Exception e)
@@ -84,7 +92,7 @@ namespace LTWAudioDownload
         /// <param name="booktitle"></param>
         static string CreateDirectory(string booktitle)
         {
-            string path = @"Download\" + booktitle + "\\";
+            string path = @"D:\Download\恋听网下载\" + booktitle + "\\";
 
             if (!System.IO.Directory.Exists(path))
                 System.IO.Directory.CreateDirectory(path);
