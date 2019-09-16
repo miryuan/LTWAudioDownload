@@ -17,9 +17,12 @@ namespace LTWAudioDownload
             //调用默认浏览器打开恋听网
             //System.Diagnostics.Process.Start("explorer.exe", "https://ting55.com");
 
-            headers.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3897.0 Safari/537.36 Edg/78.0.272.0");
+            headers.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:69.0) Gecko/20100101 Firefox/69.0");
             headers.Add("Accept-Encoding", "gzip, deflate, br");
             headers.Add("Accept", "application/json, text/javascript, */*; q=0.01");
+            headers.Add("Accept-Language", "zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2");
+            //headers.Add("Connection", "keep-alive");
+            //headers.Add("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
 
             bool isFindBook = false;
             do
